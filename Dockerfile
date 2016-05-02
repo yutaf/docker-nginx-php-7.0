@@ -1,17 +1,9 @@
 FROM nginx:1.9.15
 MAINTAINER yutaf <yutafuji2008@gmail.com>
 
-COPY templates/php.ini /srv/php/
-COPY scripts/run.sh /usr/local/bin/run.sh
-
-#TODO remove
-RUN \
-  apt-get update
-
 RUN \
 # Inatall apt packages
-#TODO restore
-#  apt-get update && \
+  apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 # binary
     curl \
@@ -57,7 +49,7 @@ RUN \
   cd php-7.0.6 && \
   ./configure \
     --prefix=/opt/php-7.0.6 \
-    --with-config-file-path=/srv/php \
+    --with-config-file-path=/srv/php/etc \
     --with-libdir=lib64 \
     --enable-mbstring \
     --enable-intl \
@@ -84,7 +76,10 @@ RUN \
     --enable-bcmath \
     --with-curl \
     --enable-zip \
+    --disable-cgi \
     --enable-fpm \
+    --with-fpm-user=www-data \
+    --with-fpm-group=www-data \
     --enable-pcntl \
     --enable-exif && \
   make && \
@@ -92,6 +87,8 @@ RUN \
   cd && \
   rm -r /usr/local/src/php-7.0.6
 
+# php.ini
+COPY templates/php.ini /srv/php/etc/
 # Add php to PATH to compile extensions like xdebug
 ENV PATH /opt/php-7.0.6/bin:$PATH
 
@@ -108,7 +105,7 @@ RUN \
   cd && \
   rm -r /usr/local/src/xdebug-2.4.0
 # Set zend_extension path
-RUN echo 'zend_extension = "/opt/php-7.0.6/lib/php/extensions/no-debug-non-zts-20151012/xdebug.so"' >> /srv/php/php.ini
+RUN echo 'zend_extension = "/opt/php-7.0.6/lib/php/extensions/no-debug-non-zts-20151012/xdebug.so"' >> /srv/php/etc/php.ini
 
 # redis
 #TODO wait for php7 support
@@ -158,6 +155,11 @@ RUN \
 ##  echo "<?php echo 'hello, php';" > /srv/www/htdocs/index.php && \
 ##  echo "<?php phpinfo();" > /srv/www/htdocs/info.php
 
+# nginx setting
+COPY nginx/nginx.conf /etc/nginx/
+COPY nginx/conf.d /etc/nginx/conf.d/
+
+COPY scripts/run.sh /usr/local/bin/run.sh
 # supervisor
 COPY templates/supervisord.conf /etc/supervisor/conf.d/
 RUN \
@@ -175,7 +177,7 @@ RUN \
 # chmod script for running container
   chmod +x /usr/local/bin/run.sh
 
-WORKDIR /srv/www
+#WORKDIR /srv/www
 EXPOSE 80
 CMD ["/usr/local/bin/run.sh"]
 #CMD ["touch", "/root/dummy", "&&", "tail", "-f", "/root/dummy"]
