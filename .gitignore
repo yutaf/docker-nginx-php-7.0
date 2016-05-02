@@ -3,4 +3,3 @@
 !.gitignore
 /templates/ssh/*
 !/templates/ssh/.gitignore
-/tmp
