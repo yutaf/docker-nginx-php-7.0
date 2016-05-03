@@ -1,3 +1,4 @@
+#FROM yutaf/nginx-php-7.0
 FROM nginx:1.9.15
 MAINTAINER yutaf <yutafuji2008@gmail.com>
 
