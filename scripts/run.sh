@@ -20,6 +20,5 @@ mkdir -m 777 -p /srv/php/upload_tmp_dir
 #
 
 # supervisor
-#/usr/bin/supervisord
-
-nginx -g 'daemon off;'
+/usr/bin/supervisord
+#nginx -g 'daemon off;'

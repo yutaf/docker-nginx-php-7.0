@@ -149,15 +149,21 @@ RUN \
 #  cd /srv/www/logs && \
 #  mkdir -m 777 access error app && \
 #  cd - && \
-## make Apache document root directory
-#  mkdir -p /srv/www/htdocs
-##  mkdir -p /srv/www/htdocs/ && \
-##  echo "<?php echo 'hello, php';" > /srv/www/htdocs/index.php && \
-##  echo "<?php phpinfo();" > /srv/www/htdocs/info.php
+
+RUN \
+  mkdir -p /srv/www/html/ && \
+  echo "<?php echo 'hello, php';" > /srv/www/html/index.php && \
+  echo "<?php phpinfo();" > /srv/www/html/info.php
+
+# php fpm config file
+RUN mv /opt/php-7.0.6/etc/php-fpm.conf.default /opt/php-7.0.6/etc/php-fpm.conf
+COPY php/etc/php-fpm.d/www.conf /opt/php-7.0.6/etc/php-fpm.d/
 
 # nginx setting
 COPY nginx/nginx.conf /etc/nginx/
 COPY nginx/conf.d /etc/nginx/conf.d/
+# Disable forwarding logs to /dev/stdout, /dev/stderr
+RUN rm /var/log/nginx/access.log /var/log/nginx/error.log
 
 COPY scripts/run.sh /usr/local/bin/run.sh
 # supervisor
