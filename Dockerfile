@@ -88,9 +88,9 @@ RUN \
   rm -r /usr/local/src/php-7.0.6
 
 # php.ini
-COPY templates/php.ini /srv/php/etc/
+COPY php/php.ini /srv/php/etc/
 # Add php to PATH to compile extensions like xdebug
-ENV PATH /opt/php-7.0.6/bin:$PATH
+ENV PATH /opt/php-7.0.6/bin:/opt/php-7.0.6/sbin:$PATH
 
 # xdebug
 RUN \
@@ -165,8 +165,6 @@ COPY templates/supervisord.conf /etc/supervisor/conf.d/
 RUN \
 #  echo '[program:apache2]' >> /etc/supervisor/conf.d/supervisord.conf && \
 #  echo 'command=/opt/apache2.2.31/bin/httpd -DFOREGROUND' >> /etc/supervisor/conf.d/supervisord.conf && \
-# set PATH
-  sed -i 's;^PATH="[^"]*;&:/opt/php-7.0.6/bin;' /etc/environment && \
 # set TERM
   echo export TERM=xterm-256color >> /root/.bashrc && \
 # set timezone
@@ -180,4 +178,3 @@ RUN \
 #WORKDIR /srv/www
 EXPOSE 80
 CMD ["/usr/local/bin/run.sh"]
-#CMD ["touch", "/root/dummy", "&&", "tail", "-f", "/root/dummy"]
