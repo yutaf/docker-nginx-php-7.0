@@ -90,6 +90,7 @@ RUN \
 
 # php.ini
 COPY php/php.ini /srv/php/etc/
+COPY php/php.ini /srv/php/etc/php-cli.ini
 # Add php to PATH to compile extensions like xdebug
 ENV PATH /opt/php-7.0.6/bin:/opt/php-7.0.6/sbin:$PATH
 
@@ -105,8 +106,10 @@ RUN \
   make install && \
   cd && \
   rm -r /usr/local/src/xdebug-2.4.0
+RUN \
 # Set zend_extension path
-RUN echo 'zend_extension = "/opt/php-7.0.6/lib/php/extensions/no-debug-non-zts-20151012/xdebug.so"' >> /srv/php/etc/php.ini
+  echo 'zend_extension = "/opt/php-7.0.6/lib/php/extensions/no-debug-non-zts-20151012/xdebug.so"' >> /srv/php/etc/php.ini && \
+  echo 'zend.detect_unicode = Off' >> /srv/php/etc/php-cli.ini
 
 # redis
 #TODO wait for php7 support
