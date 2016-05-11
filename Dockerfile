@@ -51,6 +51,7 @@ RUN \
   ./configure \
     --prefix=/opt/php-7.0.6 \
     --with-config-file-path=/srv/php/etc \
+    --with-config-file-scan-dir=/srv/php/etc/php.d \
     --with-libdir=lib64 \
     --enable-mbstring \
     --enable-intl \
@@ -89,8 +90,16 @@ RUN \
   rm -r /usr/local/src/php-7.0.6
 
 # php.ini
-COPY php/php.ini /srv/php/etc/
-COPY php/php.ini /srv/php/etc/php-cli.ini
+COPY php/etc/php.ini /srv/php/etc/
+COPY php/etc/php.ini /srv/php/etc/php-cli.ini
+# For composer working
+RUN echo 'zend.detect_unicode = Off' >> /srv/php/etc/php-cli.ini
+# php fpm config file
+RUN mv /opt/php-7.0.6/etc/php-fpm.conf.default /opt/php-7.0.6/etc/php-fpm.conf
+COPY php/etc/php-fpm.d/www.conf /opt/php-7.0.6/etc/php-fpm.d/
+# php.ini for modulues
+COPY php/etc/php.d/ /srv/php/etc/php.d/
+
 # Add php to PATH to compile extensions like xdebug
 ENV PATH /opt/php-7.0.6/bin:/opt/php-7.0.6/sbin:$PATH
 
@@ -106,17 +115,15 @@ RUN \
   make install && \
   cd && \
   rm -r /usr/local/src/xdebug-2.4.0
-RUN \
-# Set zend_extension path
-  echo 'zend_extension = "/opt/php-7.0.6/lib/php/extensions/no-debug-non-zts-20151012/xdebug.so"' >> /srv/php/etc/php.ini && \
-  echo 'zend.detect_unicode = Off' >> /srv/php/etc/php-cli.ini
+# Set xdebug zend_extension path
+#RUN echo 'zend_extension = xdebug.so' >> /srv/php/etc/php.ini
 
 # redis
 #TODO wait for php7 support
-# workaround: https://gist.github.com/hollodotme/418e9b7c6ebc358e7fda
 #RUN \
 #  pecl install redis
-# TODO Remove: Workaound
+
+# workaround: https://gist.github.com/hollodotme/418e9b7c6ebc358e7fda
 RUN \
   cd /usr/local/src && \
   git clone --depth 1 --branch php7 git://github.com/phpredis/phpredis.git && \
@@ -158,10 +165,6 @@ RUN \
   mkdir -p /srv/www/html/ && \
   echo "<?php echo 'hello, php';" > /srv/www/html/index.php && \
   echo "<?php phpinfo();" > /srv/www/html/info.php
-
-# php fpm config file
-RUN mv /opt/php-7.0.6/etc/php-fpm.conf.default /opt/php-7.0.6/etc/php-fpm.conf
-COPY php/etc/php-fpm.d/www.conf /opt/php-7.0.6/etc/php-fpm.d/
 
 # nginx setting
 COPY nginx/nginx.conf /etc/nginx/
