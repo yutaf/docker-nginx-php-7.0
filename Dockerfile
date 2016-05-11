@@ -89,17 +89,6 @@ RUN \
   cd && \
   rm -r /usr/local/src/php-7.0.6
 
-# php.ini
-COPY php/etc/php.ini /srv/php/etc/
-COPY php/etc/php.ini /srv/php/etc/php-cli.ini
-# For composer working
-RUN echo 'zend.detect_unicode = Off' >> /srv/php/etc/php-cli.ini
-# php fpm config file
-RUN mv /opt/php-7.0.6/etc/php-fpm.conf.default /opt/php-7.0.6/etc/php-fpm.conf
-COPY php/etc/php-fpm.d/www.conf /opt/php-7.0.6/etc/php-fpm.d/
-# php.ini for modulues
-COPY php/etc/php.d/ /srv/php/etc/php.d/
-
 # Add php to PATH to compile extensions like xdebug
 ENV PATH /opt/php-7.0.6/bin:/opt/php-7.0.6/sbin:$PATH
 
@@ -115,8 +104,6 @@ RUN \
   make install && \
   cd && \
   rm -r /usr/local/src/xdebug-2.4.0
-# Set xdebug zend_extension path
-#RUN echo 'zend_extension = xdebug.so' >> /srv/php/etc/php.ini
 
 # redis
 #TODO wait for php7 support
@@ -165,6 +152,23 @@ RUN \
   mkdir -p /srv/www/html/ && \
   echo "<?php echo 'hello, php';" > /srv/www/html/index.php && \
   echo "<?php phpinfo();" > /srv/www/html/info.php
+
+#
+# php setting
+#
+COPY php/etc/php.ini /srv/php/etc/
+COPY php/etc/php.ini /srv/php/etc/php-cli.ini
+# For composer working
+RUN echo 'zend.detect_unicode = Off' >> /srv/php/etc/php-cli.ini
+# php fpm config file
+RUN mv /opt/php-7.0.6/etc/php-fpm.conf.default /opt/php-7.0.6/etc/php-fpm.conf
+COPY php/etc/php-fpm.d/www.conf /opt/php-7.0.6/etc/php-fpm.d/
+# php.ini for modulues
+COPY php/etc/php.d/ /srv/php/etc/php.d/
+
+# Set xdebug zend_extension path only in web config file
+# Docker cli xdebug is not supported by PhpStorm
+RUN echo 'zend_extension = xdebug.so' >> /srv/php/etc/php.ini
 
 # nginx setting
 COPY nginx/nginx.conf /etc/nginx/
