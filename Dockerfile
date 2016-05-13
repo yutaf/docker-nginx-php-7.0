@@ -123,7 +123,7 @@ RUN \
   rm -rf phpredis
 
 # apcu
-RUN printf "\n" | pecl install apcu-5.1.3
+RUN printf "\n" | pecl install apcu-5.1.4
 
 #
 # Edit config files
