@@ -32,13 +32,10 @@ RUN \
     supervisor && \
   rm -r /var/lib/apt/lists/*
 
-RUN \
-# workaround for curl certification error
-  curl -k -L -o $HOME/ca-bundle-curl.crt https://curl.haxx.se/ca/cacert.pem && \
 #
 # Create /usr/local/src directory
 #
-  mkdir -p /usr/local/src
+RUN mkdir -p /usr/local/src
 
 #
 # php
@@ -91,6 +88,10 @@ RUN \
 
 # Add php to PATH to compile extensions like xdebug
 ENV PATH /opt/php-7.0.6/bin:/opt/php-7.0.6/sbin:$PATH
+
+# workaround for curl certification error
+COPY templates/ca-bundle-curl.crt /root/ca-bundle-curl.crt
+#RUN curl -k -L -o $HOME/ca-bundle-curl.crt https://curl.haxx.se/ca/cacert.pem
 
 # xdebug
 RUN \
