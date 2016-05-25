@@ -1,5 +1,5 @@
 #for yutaf/nginx-php-7.0
-FROM nginx:1.9.15
+FROM nginx:1.10.0
 MAINTAINER yutaf <yutafuji2008@gmail.com>
 
 RUN \
