@@ -153,10 +153,10 @@ RUN printf "\n" | pecl install apcu-5.1.4
 #  cd - && \
 
 RUN \
-  mkdir -p /srv/www/html/ && \
-  echo "<?php echo 'hello, php';" > /srv/www/html/index.php && \
-  echo "<?php throw new \Exception;" > /srv/www/html/error.php && \
-  echo "<?php phpinfo();" > /srv/www/html/info.php
+  mkdir -p /srv/www/public/ && \
+  echo "<?php echo 'hello, php';" > /srv/www/public/index.php && \
+  echo "<?php throw new \Exception;" > /srv/www/public/error.php && \
+  echo "<?php phpinfo();" > /srv/www/public/info.php
 
 #
 # php setting
