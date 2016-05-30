@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # php session
 mkdir -m 777 -p /srv/php/session
 echo "tmpfs /srv/php/session tmpfs size=32m,mode=700,uid=www-data,gid=www-data 0 0" >> /etc/fstab
@@ -7,13 +9,9 @@ mount /srv/php/session # need docker to run with "--privileged" option
 # php upload_tmp_dir
 mkdir -m 777 -p /srv/php/upload_tmp_dir
 
-## make log directories
-#test -d /srv/www/logs/access || mkdir -m 777 -p /srv/www/logs/access
-#test -d /srv/www/logs/error || mkdir -m 777 -p /srv/www/logs/error
-#test -d /srv/www/logs/app || mkdir -m 777 -p /srv/www/logs/app
-#cd /srv/www/logs
-#chmod 777 access error app
-#cd -
+# execute pre shell files
+test -f /usr/local/bin/pre01.sh && chmod +x /usr/local/bin/pre01.sh && /usr/local/bin/pre01.sh
+test -f /usr/local/bin/pre02.sh && chmod +x /usr/local/bin/pre02.sh && /usr/local/bin/pre02.sh
 
 #
 # Run container foreground
@@ -21,4 +19,3 @@ mkdir -m 777 -p /srv/php/upload_tmp_dir
 
 # supervisor
 /usr/bin/supervisord
-#nginx -g 'daemon off;'
