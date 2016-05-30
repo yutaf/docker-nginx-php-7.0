@@ -8,6 +8,7 @@ RUN \
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 # binary
     curl \
+    mysql-client \
 # TODO remove after redis is available by pecl install
     git \
 # php
