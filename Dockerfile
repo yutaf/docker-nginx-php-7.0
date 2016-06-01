@@ -182,7 +182,7 @@ COPY nginx/conf.d /etc/nginx/conf.d/
 # Disable forwarding logs to /dev/stdout, /dev/stderr
 RUN rm /var/log/nginx/access.log /var/log/nginx/error.log
 
-COPY scripts/run.sh /usr/local/bin/run.sh
+COPY scripts/run.sh /root/run.sh
 # supervisor
 COPY templates/supervisord.conf /etc/supervisor/conf.d/
 RUN \
@@ -196,8 +196,8 @@ RUN \
 #  echo '00 5 1,15 * * find /srv/www/logs -not -regex ".*/\.[^/]*$" -type f -mtime +15 -exec rm -f {} \;' > /root/crontab && \
 #  crontab /root/crontab && \
 # chmod script for running container
-  chmod +x /usr/local/bin/run.sh
+  chmod +x /root/run.sh
 
 WORKDIR /srv/www
 EXPOSE 80
-CMD ["/usr/local/bin/run.sh"]
+CMD ["/root/run.sh"]
