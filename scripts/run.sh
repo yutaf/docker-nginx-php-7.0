@@ -9,10 +9,6 @@ mount /srv/php/session # need docker to run with "--privileged" option
 # php upload_tmp_dir
 mkdir -m 777 -p /srv/php/upload_tmp_dir
 
-# execute pre shell files
-test -f /usr/local/bin/pre01.sh && chmod +x /usr/local/bin/pre01.sh && /usr/local/bin/pre01.sh
-test -f /usr/local/bin/pre02.sh && chmod +x /usr/local/bin/pre02.sh && /usr/local/bin/pre02.sh
-
 #
 # Run container foreground
 #
