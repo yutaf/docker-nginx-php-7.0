@@ -108,21 +108,8 @@ RUN \
   rm -r /usr/local/src/xdebug-2.4.0
 
 # redis
-#TODO wait for php7 support
-#RUN \
-#  pecl install redis
-
-# workaround: https://gist.github.com/hollodotme/418e9b7c6ebc358e7fda
 RUN \
-  cd /usr/local/src && \
-  git clone --depth 1 --branch php7 git://github.com/phpredis/phpredis.git && \
-  cd phpredis && \
-  phpize && \
-  ./configure && \
-  make && \
-  make install && \
-  cd .. && \
-  rm -rf phpredis
+  pecl install redis
 
 # apcu
 RUN printf "\n" | pecl install apcu-5.1.4
