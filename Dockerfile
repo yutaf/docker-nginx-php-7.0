@@ -43,11 +43,11 @@ RUN mkdir -p /usr/local/src
 #
 RUN \
   cd /usr/local/src && \
-  curl -L -O http://php.net/distributions/php-7.0.7.tar.gz && \
-  tar xzvf php-7.0.7.tar.gz && \
-  cd php-7.0.7 && \
+  curl -L -O http://php.net/distributions/php-7.0.8.tar.gz && \
+  tar xzvf php-7.0.8.tar.gz && \
+  cd php-7.0.8 && \
   ./configure \
-    --prefix=/opt/php-7.0.7 \
+    --prefix=/opt/php-7.0.8 \
     --with-config-file-path=/srv/php/etc \
     --with-config-file-scan-dir=/srv/php/etc/php.d \
     --with-libdir=lib64 \
@@ -85,10 +85,10 @@ RUN \
   make && \
   make install && \
   cd && \
-  rm -r /usr/local/src/php-7.0.7
+  rm -r /usr/local/src/php-7.0.8
 
 # Add php to PATH to compile extensions like xdebug
-ENV PATH /opt/php-7.0.7/bin:/opt/php-7.0.7/sbin:$PATH
+ENV PATH /opt/php-7.0.8/bin:/opt/php-7.0.8/sbin:$PATH
 
 # workaround for curl certification error
 COPY templates/ca-bundle-curl.crt /root/ca-bundle-curl.crt
@@ -167,8 +167,8 @@ COPY php/etc/php.ini /srv/php/etc/php-cli.ini
 # For composer working
 RUN echo 'zend.detect_unicode = Off' >> /srv/php/etc/php-cli.ini
 # php fpm config file
-RUN mv /opt/php-7.0.7/etc/php-fpm.conf.default /opt/php-7.0.7/etc/php-fpm.conf
-COPY php/etc/php-fpm.d/www.conf /opt/php-7.0.7/etc/php-fpm.d/
+RUN mv /opt/php-7.0.8/etc/php-fpm.conf.default /opt/php-7.0.8/etc/php-fpm.conf
+COPY php/etc/php-fpm.d/www.conf /opt/php-7.0.8/etc/php-fpm.d/
 # php.ini for modulues
 COPY php/etc/php.d/ /srv/php/etc/php.d/
 
